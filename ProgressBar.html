@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Circle Progress Bar</title>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        .circular_progress::before {
+            content: '';
+            position: absolute;
+            width: 84%;
+            height: 84%;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease-in-out;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-cyan-100 to-blue-200">
+    <div class="bg-white w-[400px] h-[400px] rounded-2xl shadow-xl flex flex-col items-center justify-center">
+        <div class="bg-orange relative h-[250px] w-[250px] rounded-full flex items-center justify-center circular_progress"
+            id="circular_progress">
+            <div class="flex flex-col items-center justify-center relative">
+                <div class="text-[50px] font-bold text-gray-800 value" id="value">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ProgressBar = document.getElementById('circular_progress');
+        let Value = document.getElementById("value");
+        let ProgressValue = 0;
+        let ProgressEnd = 98;
+        let speed = 80;
+        let progressInterval;
+        function startProgress() {
+            progressInterval = setInterval(() => {
+                ProgressValue++;
+                Value.innerHTML = `${ProgressValue}%`;
+                ProgressBar.style.background = `conic-gradient(
+                    #3B82F6 ${ProgressValue * 3.6}deg,
+                    #EFF6FF ${ProgressValue * 3.6}deg
+                )`;
+                if (ProgressValue == ProgressEnd) {
+                    clearInterval(progressInterval);
+                }
+            }, speed);
+        }
+        startProgress()
+    </script>
+
+</body>
+
+</html>

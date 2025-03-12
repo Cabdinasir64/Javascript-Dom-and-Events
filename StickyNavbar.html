@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Sticky Navbar</title>
+    <style>
+        .header {
+            background-color: transparent;
+            transition: all 0.4s ease-in-out;
+            backdrop-filter: blur(0px);
+        }
+
+        .header.active {
+            background-color: rgba(161, 255, 247, 0.95);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(50px);
+
+        }
+
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #22c55e;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .sign-up-btn {
+            transition: transform 0.2s ease;
+        }
+
+        .sign-up-btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <header class="sticky top-0 w-full z-50 header px-6">
+        <div class="container mx-auto">
+            <div class="flex items-center justify-between h-20">
+                <a href="#" class="text-gray-800 text-2xl font-bold hover:text-green-500 transition-colors">
+                    Brand<span class="text-green-500">Logo</span>
+                </a>
+
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-10">
+                        <li><a href="#"
+                                class="nav-link text-gray-700 hover:text-green-500 transition-colors font-medium">Home</a>
+                        </li>
+                        <li><a href="#"
+                                class="nav-link text-gray-700 hover:text-green-500 transition-colors font-medium">About
+                                Us</a></li>
+                        <li><a href="#"
+                                class="nav-link text-gray-700 hover:text-green-500 transition-colors font-medium">Products</a>
+                        </li>
+                        <li><a href="#"
+                                class="nav-link text-gray-700 hover:text-green-500 transition-colors font-medium">Contact</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="flex space-x-4">
+                    <button
+                        class="sign-up-btn bg-green-500 text-white px-6 py-2.5 rounded-full hover:bg-green-600 font-medium shadow-lg shadow-green-500/20">
+                        Sign Up
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="pt-20">
+        <div class="container mx-auto px-6 py-16">
+            <h1 class="text-5xl font-bold text-gray-800 mb-6">Welcome to Our Platform</h1>
+            <p class="text-gray-600 max-w-2xl text-lg leading-relaxed">
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Architecto quam corporis accusamus molestias
+                consequatur nobis, neque excepturi similique voluptatibus.
+            </p>
+        </div>
+    </div>
+
+    <section class="min-h-screen bg-gradient-to-r from-pink-100 to-pink-200 py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-gray-800 mb-6">Section 1</h2>
+            <p class="text-gray-700 max-w-2xl text-lg">
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Architecto quam corporis accusamus molestias.
+            </p>
+        </div>
+    </section>
+
+    <section class="min-h-screen bg-gradient-to-r from-blue-100 to-blue-200 py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-gray-800 mb-6">Section 2</h2>
+            <p class="text-gray-700 max-w-2xl text-lg">
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Architecto quam corporis accusamus molestias.
+            </p>
+        </div>
+    </section>
+
+    <script>
+        const header = document.querySelector('.header');
+
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > 50) {
+                header.classList.add("active");
+            } else {
+                header.classList.remove("active");
+            }
+        });
+
+    </script>
+</body>
+
+</html>

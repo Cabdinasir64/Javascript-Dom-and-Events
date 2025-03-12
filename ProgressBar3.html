@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>File Upload Progress Bar</title>
+    <style>
+        .upload-items::-webkit-scrollbar {
+            width: 0x;
+        }
+
+        .upload-items {
+            scrollbar-width: none;
+        }
+
+        .upload-items::-webkit-scrollbar-thumb {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 font-sans">
+    <div class="w-[400px] p-8 bg-white shadow-lg rounded-xl transition-all duration-300 hover:shadow-xl">
+        <!-- Header -->
+        <h1 class="text-center text-blue-600 text-2xl font-semibold mb-6">
+            File Uploader
+            <span class="block text-sm text-blue-400 mt-1">Upload your files securely</span>
+        </h1>
+
+        <!-- Upload Area -->
+        <form id="upload-form"
+            class="group border-dashed border-blue-400 border-[2px] h-[150px] rounded-lg flex items-center justify-center cursor-pointer transition-all duration-300 hover:border-blue-600 hover:bg-blue-50"
+            aria-label="File upload area">
+            <input type="file" class="hidden file">
+            <div class="flex flex-col items-center justify-center p-4">
+                <i
+                    class="fa fa-cloud-upload text-blue-500 text-5xl mb-3 group-hover:scale-110 transition-transform"></i>
+                <span class="text-blue-400 text-lg text">Drop files here or click to browse</span>
+                <span class="text-blue-300 text-sm mt-2">Max file size: 5MB</span>
+            </div>
+        </form>
+
+        <!-- Upload Progress Section -->
+        <div id="upload-items" class="space-y-4 mt-6 h-[120px] overflow-y-scroll upload-items">
+
+        </div>
+
+        <!-- Error State -->
+        <div id="error-message" class="bg-red-50 p-4 rounded-lg mt-4 hidden">
+            <div class="flex items-center text-red-500">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span>Upload failed. Please try again.</span>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const form = document.querySelector('#upload-form');
+        const fileInput = form.querySelector(".file");
+        const uploadItems = document.querySelector('#upload-items');
+        const errorMessage = document.querySelector('#error-message');
+
+        // Template for upload item
+        const createUploadItem = (file, status = 'uploading') => {
+            const div = document.createElement('div');
+            div.className = `bg-${status === 'uploading' ? 'blue' : 'green'}-50 p-4 rounded-lg shadow-sm transition-all duration-300`;
+            div.innerHTML = `
+                <div class="flex items-center w-full">
+                    <i class="fas fa-file-alt text-xl text-${status === 'uploading' ? 'blue' : 'green'}-500"></i>
+                    <div class="flex items-center justify-between w-full ml-3">
+                        <span class="font-medium text-gray-700">${file.name}</span>
+                        ${status === 'uploading' ?
+                    `<span class="text-blue-600 font-medium progress-text">0%</span>` :
+                    `<div class="flex items-center">
+                                <span class="text-gray-500 mr-2">${formatFileSize(file.size)}</span>
+                                <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                            </div>`
+                }
+                    </div>
+                </div>
+                ${status === 'uploading' ? `
+                    <div class="w-full h-2 bg-white rounded-full mt-3 overflow-hidden">
+                        <div class="progress-bar bg-blue-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                ` : ''}
+            `;
+            return div;
+        };
+
+        // Format file size
+        const formatFileSize = (bytes) => {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        };
+
+        // Simulate file upload
+        const simulateUpload = (file, uploadItem) => {
+            const progressBar = uploadItem.querySelector('.progress-bar');
+            const progressText = uploadItem.querySelector('.progress-text');
+            let progress = 0;
+
+            const interval = setInterval(() => {
+                progress++
+                if (progressBar) progressBar.style.width = `${progress}%`;
+                if (progressText) progressText.textContent = `${progress}%`;
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        uploadItem.replaceWith(createUploadItem(file, 'completed'));
+                    }, 300);
+                }
+            }, 100);
+        };
+
+        // Handle file selection
+        const handleFiles = (files) => {
+            Array.from(files).forEach(file => {
+                // Validate file size (5MB max)
+                if (file.size > 5 * 1024 * 1024) {
+                    errorMessage.classList.remove('hidden');
+                    errorMessage.querySelector('span').textContent = 'File size exceeds 5MB limit';
+                    return;
+                }
+                else {
+                    errorMessage.classList.add('hidden');
+                }
+
+                const uploadItem = createUploadItem(file);
+                uploadItems.appendChild(uploadItem);
+                simulateUpload(file, uploadItem);
+            });
+        };
+
+        // Event Listeners
+        form.addEventListener("click", () => fileInput.click());
+
+        fileInput.addEventListener("change", (e) => {
+            handleFiles(e.target.files);
+            fileInput.value = ''; // Reset input
+        });
+        let text = document.querySelector('.text');
+
+        // Drag and Drop handlers
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            form.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+
+        form.addEventListener('dragenter', () => {
+            form.classList.add('bg-blue-50');
+            text.textContent = 'Drop files here';
+
+        });
+
+        form.addEventListener('dragleave', () => {
+            form.classList.remove('bg-blue-50');
+            text.textContent = 'Drop files here or click to browse';
+        });
+
+        form.addEventListener('drop', (e) => {
+            form.classList.remove('bg-blue-50');
+            text.textContent = 'Drop files here or click to browse';
+            handleFiles(e.dataTransfer.files);
+        });
+    </script>
+</body>
+
+</html>
