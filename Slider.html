@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <title>Slider</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .carousel {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: calc((100% / 3) - 15px);
+            gap: 20px;
+            cursor: grab;
+            overflow-x: scroll;
+            scroll-behavior: smooth;
+            transition: All 1.5s ease;
+        }
+
+        .carousel:hover {
+            cursor: grabbing;
+        }
+
+        .carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .wr i {
+            position: absolute;
+            z-index: 1;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .wr i:nth-child(1) {
+            left: -8px;
+        }
+
+        .wr i:last-child {
+            right: -5px;
+        }
+
+        @media (max-width: 968px) {
+            .carousel {
+                grid-auto-columns: calc((100% / 2) - 9px);
+            }
+        }
+
+        @media (max-width: 786px) {
+            .carousel {
+                grid-auto-columns: 100%;
+            }
+
+            .wr i {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen bg-gray-100 font-sans">
+    <div class="w-full max-w-[1100px] p-4 relative wr">
+        <i
+            class="Leftarrow fa fa-arrow-left bg-white shadow-md cursor-pointer rounded-full flex items-center justify-center h-9 w-9 transition-all duration-300"></i>
+        <ul class="carousel ">
+
+            <li
+                class="bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 duration-300">
+                <div class="h-56 w-full">
+                    <img src="kid-8419485_1280.jpg" alt="Child smiling" class="h-full w-full object-cover">
+                </div>
+                <div class="px-4 py-3">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2">Joyful Learning</h2>
+                    <p class="text-gray-600 text-sm mb-3">Explore the wonders of early childhood education with fun and
+                        engaging activities.</p>
+                    <button
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Learn More
+                    </button>
+                </div>
+            </li>
+            <li
+                class="bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 duration-300">
+                <div class="h-56 w-full">
+                    <img src="kid-8419485_1280.jpg" alt="Child smiling" class="h-full w-full object-cover">
+                </div>
+                <div class="px-4 py-3">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2">Joyful Learning</h2>
+                    <p class="text-gray-600 text-sm mb-3">Explore the wonders of early childhood education with fun and
+                        engaging activities.</p>
+                    <button
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Learn More
+                    </button>
+                </div>
+            </li>
+            <li
+                class="bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 duration-300">
+                <div class="h-56 w-full">
+                    <img src="kid-8419485_1280.jpg" alt="Child smiling" class="h-full w-full object-cover">
+                </div>
+                <div class="px-4 py-3">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2">Joyful Learning</h2>
+                    <p class="text-gray-600 text-sm mb-3">Explore the wonders of early childhood education with fun and
+                        engaging activities.</p>
+                    <button
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Learn More
+                    </button>
+                </div>
+            </li>
+            <li
+                class="bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 duration-300">
+                <div class="h-56 w-full">
+                    <img src="kid-8419485_1280.jpg" alt="Child smiling" class="h-full w-full object-cover">
+                </div>
+                <div class="px-4 py-3">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2">Joyful Learning</h2>
+                    <p class="text-gray-600 text-sm mb-3">Explore the wonders of early childhood education with fun and
+                        engaging activities.</p>
+                    <button
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Learn More
+                    </button>
+                </div>
+            </li>
+            <li
+                class="bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 duration-300">
+                <div class="h-56 w-full">
+                    <img src="kid-8419485_1280.jpg" alt="Child smiling" class="h-full w-full object-cover">
+                </div>
+                <div class="px-4 py-3">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2">Joyful Learning</h2>
+                    <p class="text-gray-600 text-sm mb-3">Explore the wonders of early childhood education with fun and
+                        engaging activities.</p>
+                    <button
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Learn More
+                    </button>
+                </div>
+            </li>
+            <li
+                class="bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 duration-300">
+                <div class="h-56 w-full">
+                    <img src="kid-8419485_1280.jpg" alt="Child smiling" class="h-full w-full object-cover">
+                </div>
+                <div class="px-4 py-3">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2">Joyful Learning</h2>
+                    <p class="text-gray-600 text-sm mb-3">Explore the wonders of early childhood education with fun and
+                        engaging activities.</p>
+                    <button
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Learn More
+                    </button>
+                </div>
+            </li>
+        </ul>
+        <i
+            class="Rightarrow fa fa-arrow-right  bg-white shadow-md cursor-pointer rounded-full flex items-center justify-center h-9 w-9 transition-all duration-300 "></i>
+    </div>
+    <script>
+        let carousel = document.querySelector(".carousel");
+        let LeftArrow = document.querySelector(".Leftarrow");
+        let RightArrow = document.querySelector(".Rightarrow");
+        let scrollAmount = carousel.offsetWidth / 2;
+
+        LeftArrow.addEventListener("click", () => {
+            carousel.scrollLeft -= scrollAmount;
+        });
+
+        RightArrow.addEventListener("click", () => {
+            carousel.scrollLeft += scrollAmount;
+        });
+    </script>
+</body>
+
+</html>
