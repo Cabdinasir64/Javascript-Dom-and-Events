@@ -29,11 +29,15 @@
             border: 2px solid #0e51e2;
             border-radius: 50%;
             cursor: pointer;
-            transition: all .5s ease;
+            transition: all .3s ease;
         }
 
         .dot:hover {
             background-color: #0e51e2;
+        }
+
+        .slider {
+            transition: all .5s ease-in-out;
         }
     </style>
 </head>
@@ -43,7 +47,7 @@
         <!-- Slider Frame -->
         <div class="frame relative overflow-hidden shadow-md rounded-lg">
             <!-- Slider Track -->
-            <div class="slider flex transition-transform duration-500 ease-in-out">
+            <div class="slider flex">
                 <!-- Images with Div Wrappers -->
                 <div class="w-full h-[400px] flex-shrink-0">
                     <img src="img1.jpg" alt="Image 1" class="w-full h-full object-cover">
@@ -83,76 +87,74 @@
     </div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            Dots()
+        })
+
         const slider = document.querySelector('.slider');
         const images = document.querySelectorAll('.slider div');
         let Buttons = document.querySelector(".buttons");
         let counter = 0;
-        const slideWidth = images[0].offsetWidth;
+        const slideWidth = images[0].clientWidth;
         let dots = [];
-    
-        const TransformSlider = () => {
-            slider.style.transform = `translateX(-${counter * slideWidth}px)`;
-        };
-    
-        const None = () => {
-            slider.style.transform = `translateX(0px)`;
-        };
-    
+
         const Active = (index) => {
             dots.forEach((dot, i) => {
-                if (i === index) {
-                    dot.classList.add("active");
-                } else {
-                    dot.classList.remove("active");
+                if (i == index) {
+                    dot.classList.add("active")
                 }
-            });
-        };
-    
+                else {
+                    dot.classList.remove("active")
+                }
+            })
+        }
+
+        const TransFormSLider = () => {
+            slider.style.transform = `translateX(-${counter * slideWidth}px)`;
+        }
+
         const RightArrow = () => {
             if (counter < images.length - 1) {
-                counter++;
-            } else {
-                counter = 0;
+                counter++
             }
-            TransformSlider();
-            Active(counter);
-        };
-    
+            else {
+                counter = 0
+            }
+            TransFormSLider()
+            Active(counter)
+        }
+
         const LeftArrow = () => {
             if (counter > 0) {
-                counter--;
-            } else {
-                counter = images.length - 1;
+                counter--
             }
-            TransformSlider();
-            Active(counter);
-        };
-    
+            else {
+                counter = images.length - 1
+            }
+            TransFormSLider()
+            Active(counter)
+        }
+
+
+
         const Dots = () => {
             for (let i = 0; i < images.length; i++) {
                 let dot = document.createElement("div");
                 dot.classList.add("dot");
                 dot.addEventListener("click", () => {
-                    counter = i;
-                    TransformSlider();
-                    Active(counter);
-                });
+                    counter = i
+                    TransFormSLider()
+                    Active(counter)
+                })
                 Buttons.appendChild(dot);
                 dots.push(dot);
             }
-            Active(0);
-        };
-    
-        Dots();
-    
-        const autoPlay = () => {
-            RightArrow();
-            
-        };
+            Active(0)
+        }
 
-        setInterval(autoPlay, 3000); 
+
     </script>
-    
+
 
 </body>
 
