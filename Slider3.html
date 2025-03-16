@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Slider</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white rounded-2xl shadow-xl w-[600px] h-[420px] flex overflow-hidden">
+        <div class="flex flex-col p-4 gap-2 w-48">
+            <img src="img4.jpg" alt="Thumbnail 1" class="thumbnail object-cover w-full h-32 rounded-lg cursor-pointer hover:opacity-90 transition-opacity duration-300" data-image="img4.jpg">
+            <img src="img2.jpg" alt="Thumbnail 2" class="thumbnail object-cover w-full h-32 rounded-lg cursor-pointer hover:opacity-90 transition-opacity duration-300" data-image="img2.jpg">
+            <img src="img6.jpg" alt="Thumbnail 3" class="thumbnail object-cover w-full h-32 rounded-lg cursor-pointer hover:opacity-90 transition-opacity duration-300" data-image="img6.jpg">
+        </div>
+        <div class="relative flex-grow py-5 transition-all duration-300" id="mainImage">
+            <img id="mainImageSrc" src="img4.jpg" alt="Main Image" class="object-cover w-full h-full">
+            <div class="absolute top-8 right-4 bg-green-800/50 text-white rounded-full px-3 py-1 text-sm font-medium">
+                <span id="count">1</span> / <span id="total">3</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let thumbnails = document.querySelectorAll('.thumbnail');
+        let mainImage = document.getElementById('mainImageSrc');
+        let count = document.getElementById("count")
+
+        thumbnails.forEach((thumbnail, index) => {
+          thumbnail.addEventListener("click", () => {
+            let img =  thumbnail.getAttribute('data-image');
+            mainImage.src = img
+            count.innerHTML = index + 1
+          })
+        })
+    </script>
+</body>
+
+</html>
