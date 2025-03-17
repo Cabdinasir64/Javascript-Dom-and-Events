@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+        }
+
+        form input {
+            outline: none;
+            border: none;
+        }
+
+        .search-results {
+            overflow-y: scroll;
+            max-height: 400px;
+        }
+
+        .search-results::-webkit-scrollbar {
+            display: none;
+        }
+
+        .product {
+            transition: all .5 ease;
+        }
+
+        .product.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+<body class="bg-lime-100 min-h-screen flex items-center justify-center py-10">
+
+    <div class="bg-white w-full max-w-2xl p-8 rounded-lg shadow-lg relative ">
+        <form
+            class="flex items-center p-3 w-full gap-x-2 border-2 border-gray-800 rounded-lg sticky top-0 bg-white z-10">
+            <i class="fa fa-search"></i>
+            <input type="text" placeholder="Search items" class="w-full Search_items" aria-label="Search items"
+                onkeyup="search()">
+        </form>
+        <div class="mt-12 flex flex-col gap-y-3 search-results">
+            <h2 class="not text-red-500 text-center text-xl font-bold hidden"></h2>
+            <div class="flex flex-row product">
+                <div class="h-[80px] w-[80px]">
+                    <img src="img1.jpg" alt="T-shirt" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <div class="flex items-center flex-col justify-center ml-4">
+                    <h2 class="text-lg font-semibold">T-shirt</h2>
+                    <p class="text-gray-600">$12.99</p>
+                </div>
+            </div>
+            <div class="flex flex-row product">
+                <div class="h-[80px] w-[80px]">
+                    <img src="img3.jpg" alt="Suit" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <div class="flex items-center flex-col justify-center ml-4">
+                    <h2 class="text-lg font-semibold">Suit</h2>
+                    <p class="text-gray-600">$29.99</p>
+                </div>
+            </div>
+            <div class="flex flex-row product">
+                <div class="h-[80px] w-[80px]">
+                    <img src="img4.jpg" alt="Jeans" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <div class="flex items-center flex-col justify-center ml-4">
+                    <h2 class="text-lg font-semibold">Jeans</h2>
+                    <p class="text-gray-600">$17.99</p>
+                </div>
+            </div>
+            <div class="flex flex-row product">
+                <div class="h-[80px] w-[80px]">
+                    <img src="img5.jpg" alt="Watch" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <div class="flex items-center flex-col justify-center ml-4">
+                    <h2 class="text-lg font-semibold">Watch</h2>
+                    <p class="text-gray-600">$30.99</p>
+                </div>
+            </div>
+            <div class="flex flex-row product">
+                <div class="h-[80px] w-[80px]">
+                    <img src="img6.jpg" alt="Jacket" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <div class="flex items-center flex-col justify-center ml-4">
+                    <h2 class="text-lg font-semibold">Jacket</h2>
+                    <p class="text-gray-600">$99.99</p>
+                </div>
+            </div>
+            <div class="flex flex-row product">
+                <div class="h-[80px] w-[80px]">
+                    <img src="img1.jpg" alt="T-shirt" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <div class="flex items-center flex-col justify-center ml-4">
+                    <h2 class="text-lg font-semibold">T-shirt</h2>
+                    <p class="text-gray-600">$12.99</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const search = () => {
+            let Search = document.querySelector(".Search_items").value.toUpperCase();
+            let product = document.querySelectorAll(".product");
+            let notFoundMessage = document.querySelector(".not");
+            let found = false;
+
+            for (let i = 0; i < product.length; i++) {
+                let match = product[i].querySelector("h2");
+                if (match) {
+                    let textvalue = match.textContent || match.innerHTML;
+                    if (textvalue.toUpperCase().indexOf(Search) > -1) {
+                        product[i].classList.remove("hidden");
+                        found = true;
+                    } else {
+                        product[i].classList.add("hidden");
+                    }
+                }
+            }
+
+            if (!found) {
+                notFoundMessage.textContent = 'Not product Found';
+                notFoundMessage.classList.remove("hidden");
+            } else {
+                notFoundMessage.classList.add("hidden");
+            }
+        }
+    </script>
+</body>
+
+</html>
