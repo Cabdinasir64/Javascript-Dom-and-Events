@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tab Component</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+        }
+
+        form input {
+            border: none;
+            outline: none;
+            color: black;
+            width: 100%;
+        }
+
+        form input::placeholder {
+            color: black;
+        }
+
+        .filter_buttons button.active {
+            background-color: rgb(0, 102, 255);
+            color: white;
+        }
+        .card.hide{
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-r from-purple-600 to-blue-600 min-h-screen flex items-center justify-center">
+
+
+    <div class="bg-white rounded-lg shadow-md w-full max-w-3xl p-8">
+        <div class="filter_buttons flex items-center gap-x-6 justify-center w-full  p-4 bg-gray-800 overflow-hidden">
+            <button class="px-6 py-3 bg-gray-200 rounded-md text-center text-xl active" data-name="All">All</button>
+            <button class="px-6 py-3 bg-gray-200 rounded-md text-center text-xl" data-name="Dog">Dogs</button>
+            <button class="px-6 py-3 bg-gray-200 rounded-md text-center text-xl"
+                data-name="Marketing">Marketing</button>
+            <button class="px-6 py-3 bg-gray-200 rounded-md text-center text-xl" data-name="People">People</button>
+            <button class="px-6 py-3 bg-gray-200 rounded-md text-center text-xl" data-name="Laptops">Laptops</button>
+        </div>
+        <div class="mt-8 grid grid-cols-2 place-items-center gap-y-4 filter_cards">
+            <div class="bg-white shadow-lg rounded-md w-full max-w-[300px] card" data-name="Dog">
+                <div class="h-[200px] w-full overflow-hidden rounded-t-md">
+                    <img src="img2.jpg" alt="">
+                </div>
+                <div class="px-4 py-6">
+                    <h2 class="text-3xl font-semibold text-gray-800">Dog</h2>
+                    <p class="text-gray-500 mt-2 text-xl">This A Cat</p>
+                </div>
+            </div>
+            <div class="bg-white shadow-lg rounded-md w-full max-w-[300px] card" data-name="Marketing">
+                <div class="h-[200px] w-full overflow-hidden rounded-t-md">
+                    <img src="img3.jpg" alt="">
+                </div>
+                <div class="px-4 py-6">
+                    <h2 class="text-3xl font-semibold text-gray-800">Marketing</h2>
+                    <p class="text-gray-500 mt-2 text-xl">This A Marketing</p>
+                </div>
+            </div>
+            <div class="bg-white shadow-lg rounded-md w-full max-w-[300px] card" data-name="People">
+                <div class="h-[200px] w-full overflow-hidden rounded-t-md">
+                    <img src="img4.jpg" alt="">
+                </div>
+                <div class="px-4 py-6">
+                    <h2 class="text-3xl font-semibold text-gray-800">Man</h2>
+                    <p class="text-gray-500 mt-2 text-xl">This A Man</p>
+                </div>
+            </div>
+            <div class="bg-white shadow-lg rounded-md w-full max-w-[300px] card" data-name="Laptops">
+                <div class="h-[200px] w-full overflow-hidden rounded-t-md">
+                    <img src="img5.jpg" alt="">
+                </div>
+                <div class="px-4 py-6">
+                    <h2 class="text-3xl font-semibold text-gray-800">Laptop</h2>
+                    <p class="text-gray-500 mt-2 text-xl">This A Laptop</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        let Buttons = document.querySelectorAll(".filter_buttons button")
+        let Cards = document.querySelectorAll(".card")
+
+        const Filter = e => {
+            document.querySelector(".active").classList.remove("active")
+            e.target.classList.add("active")
+
+            Cards.forEach(card => {
+                card.classList.add("hide")
+
+                if(card.dataset.name === e.target.dataset.name || e.target.dataset.name === "All"){
+                    card.classList.remove("hide")
+
+                }
+            })
+
+        }
+
+        Buttons.forEach(button => button.addEventListener("click", Filter))
+
+    </script>
+</body>
+
+</html>
