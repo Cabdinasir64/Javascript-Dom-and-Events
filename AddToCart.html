@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add To Cart</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+        }
+
+        .side_bar {
+            right: -350px;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .side_bar.active {
+            right: 0;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body class="bg-lime-400 min-h-screen flex items-center justify-center">
+    <div class="bg-white max-w-4xl w-full mx-4 p-8 rounded-lg shadow-lg">
+        <header class="flex items-center justify-between mb-8 p-4 rounded-lg">
+            <div class="text-2xl font-bold">
+                <a href="#" class="text-gray-800">Shop<span class="text-blue-400">Market</span></a>
+            </div>
+            <div class="relative" id="Cart">
+                <i class="fa fa-cart-shopping cursor-pointer text-2xl text-gray-800 hover:text-blue-400"></i>
+                <div
+                    class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                    <span id="cart-count">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar Cart -->
+        <div class="side_bar bg-blue-600 h-screen w-80 fixed top-0 shadow-2xl" id="side_bar">
+            <!-- Cart Header -->
+            <div class="bg-blue-700 p-4 flex items-center justify-between rounded-b-lg">
+                <h2 class="text-white text-xl font-semibold">Your Cart</h2>
+                <button class="text-white hover:text-gray-200 transition-colors duration-300" id="CloseCart">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Cart Items -->
+            <div class="p-4 overflow-y-auto h-[70vh] scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 space-y-8"
+                id="SideBarItems">
+                <!-- Cart items will be dynamically inserted here -->
+            </div>
+
+            <!-- Cart Footer -->
+            <div class="absolute bottom-0 w-full bg-blue-700 p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-white text-lg font-semibold">Total:</h3>
+                    <p class="text-white text-lg" id="cart-total">$0</p>
+                </div>
+                <button
+                    class="w-full bg-white text-blue-600 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-300">
+                    Checkout
+                </button>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="grid grid-cols-3 gap-8 place-items-center" id="products">
+            <!-- Products will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+        let CartIcon = document.getElementById("Cart");
+        let CloseCart = document.getElementById("CloseCart");
+        let SideBar = document.getElementById("side_bar");
+        let SideBarItems = document.getElementById("SideBarItems");
+        let CartCount = document.getElementById("cart-count");
+        let CartTotal = document.getElementById("cart-total");
+
+        // Toggle sidebar
+        CartIcon.addEventListener("click", () => {
+            SideBar.classList.toggle("active");
+        });
+        CloseCart.addEventListener("click", () => {
+            SideBar.classList.remove("active");
+        });
+
+        // Products Data
+        let Products = [
+            { id: 1, name: "Item 1", price: 500, dateNew: "new", img: "img2.jpg" },
+            { id: 2, name: "Item 2", price: 900, dateNew: "new", img: "img3.jpg" },
+            { id: 3, name: "Item 3", price: 100, img: "img4.jpg" },
+            { id: 4, name: "Item 4", price: 900, img: "img5.jpg" },
+            { id: 5, name: "Item 5", price: 760, img: "img6.jpg" },
+        ];
+
+        // Cart Data
+        let Cart = [];
+
+        // Display Products
+        function DisplayProducts(limit = null) {
+            const products = document.getElementById("products");
+            products.innerHTML = "";
+
+            const productsToDisplay = limit ? Products.slice(0, limit) : Products;
+
+            productsToDisplay.forEach((item, key) => {
+                let div = document.createElement("div");
+                div.className = "bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300";
+                div.innerHTML = `
+                    <div class="h-48 w-full overflow-hidden">
+                        <img src="${item.img}" alt="Product Image"
+                            class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                    </div>
+                    <div class="p-4">
+                        <h2 class="text-lg font-semibold text-gray-800 mb-1">${item.name}</h2>
+                        <h5 class="text-md text-gray-600 mb-3">$${item.price}</h5>
+                        <div class="flex items-center justify-between">
+                            <button
+                                class="flex items-center justify-center bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300" onclick="AddToCart(${key})">
+                                <i class="fa fa-cart-shopping mr-2"></i>
+                                Add To Cart
+                            </button>
+                        </div>
+                    </div>
+                `;
+                products.appendChild(div);
+            });
+        }
+
+        // Add to Cart
+        function AddToCart(id) {
+            const product = Products[id];
+            const cartItem = Cart.find(item => item.id === product.id);
+
+            if (cartItem) {
+                cartItem.quantity += 1;
+            } else {
+                Cart.push({ ...product, quantity: 1}); 
+            }
+
+            updateCartUI();
+        }
+
+        // Update Cart UI
+        function updateCartUI() {
+            SideBarItems.innerHTML = "";
+            let total = 0;
+
+            Cart.forEach((item, key) => {
+                total += item.price * item.quantity;
+
+                let div = document.createElement("div");
+                div.className = "flex items-center justify-between mb-4";
+                div.innerHTML = `
+                    <div class="flex items-center">
+                        <img src="${item.img}" alt="Product Image" class="w-12 h-12 object-cover rounded-lg">
+                        <div class="ml-3">
+                            <h3 class="text-white text-md font-medium">${item.name}</h3>
+                            <p class="text-gray-200 text-sm">$${item.price}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <button onclick="decreaseQuantity(${key})"
+                            class="text-white bg-blue-500 w-8 h-8 rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors duration-300">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                        <span class="text-white mx-3">${item.quantity}</span>
+                        <button onclick="increaseQuantity(${key})"
+                            class="text-white bg-blue-500 w-8 h-8 rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors duration-300">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                    <button onclick="removeFromCart(${key})"
+                        class="text-red-500 hover:text-red-600 transition-colors duration-300">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                `;
+                SideBarItems.appendChild(div);
+            });
+
+            CartCount.textContent = Cart.length;
+            CartTotal.textContent = `$${total}`;
+        }
+
+        // Increase Quantity
+        function increaseQuantity(key) {
+            Cart[key].quantity += 1;
+            updateCartUI();
+        }
+
+        // Decrease Quantity
+        function decreaseQuantity(key) {
+            if (Cart[key].quantity > 1) {
+                Cart[key].quantity -= 1;
+            } else {
+                Cart.splice(key, 1); 
+            }
+            updateCartUI();
+        }
+
+        
+        function removeFromCart(key) {
+            Cart.splice(key, 1);
+            updateCartUI();
+        }
+
+     
+        DisplayProducts(5);
+    </script>
+</body>
+
+</html>
