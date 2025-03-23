@@ -30,6 +30,24 @@
             right: 0;
             opacity: 1;
         }
+
+        .pagination {
+            margin-top: 10px;
+        }
+
+        .pagination button {
+            margin: 2px;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            font-weight: bold;
+            background-color: #007bff;
+            color: white;
+        }
     </style>
 </head>
 
@@ -80,8 +98,13 @@
         <!-- Products Grid -->
         <div class="grid grid-cols-3 gap-8 place-items-center" id="products">
             <!-- Products will be dynamically inserted here -->
+            <!-- Pagination buttons -->
+
+
         </div>
     </div>
+    </div>
+    <div id="pagination" class="pagination"></div>
 
     <script>
         let CartIcon = document.getElementById("Cart");
@@ -90,6 +113,9 @@
         let SideBarItems = document.getElementById("SideBarItems");
         let CartCount = document.getElementById("cart-count");
         let CartTotal = document.getElementById("cart-total");
+
+
+
 
         // Toggle sidebar
         CartIcon.addEventListener("click", () => {
@@ -105,11 +131,12 @@
             { id: 2, name: "Item 2", price: 900, dateNew: "new", img: "img3.jpg" },
             { id: 3, name: "Item 3", price: 100, img: "img4.jpg" },
             { id: 4, name: "Item 4", price: 900, img: "img5.jpg" },
-            { id: 5, name: "Item 5", price: 760, img: "img6.jpg" },
+            { id: 5, name: "Item 5", price: 760, img: "img6.jpg" }
         ];
 
         // Cart Data
         let Cart = [];
+
 
         // Display Products
         function DisplayProducts(limit = null) {
@@ -150,7 +177,7 @@
             if (cartItem) {
                 cartItem.quantity += 1;
             } else {
-                Cart.push({ ...product, quantity: 1}); 
+                Cart.push({ ...product, quantity: 1 });
             }
 
             updateCartUI();
@@ -213,14 +240,16 @@
             updateCartUI();
         }
 
-        
+
         function removeFromCart(key) {
             Cart.splice(key, 1);
             updateCartUI();
         }
 
-     
-        DisplayProducts(5);
+        document.addEventListener("DOMContentLoaded", () => {
+            DisplayProducts()
+        })
+
     </script>
 </body>
 
