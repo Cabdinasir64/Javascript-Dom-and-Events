@@ -143,7 +143,14 @@
             const products = document.getElementById("products");
             products.innerHTML = "";
 
-            const productsToDisplay = limit ? Products.slice(0, limit) : Products;
+            let productsToDisplay;
+
+            if(limit){
+                productsToDisplay = Products.slice(0, limit);
+            }
+            else{
+                productsToDisplay = Products;
+            }
 
             productsToDisplay.forEach((item, key) => {
                 let div = document.createElement("div");
@@ -247,7 +254,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            DisplayProducts()
+            DisplayProducts(2)
         })
 
     </script>
