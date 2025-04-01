@@ -6,45 +6,152 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="input.css">
     <title>Quiz-Game</title>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         .correct {
-            background-color: lime;
+            background-color: #4ade80;
             color: white;
+            border-color: #22c55e;
         }
 
         .correct:hover {
-            background-color: rgba(0, 255, 0, 0.80);
+            background-color: #22c55e;
         }
 
         .incorrect {
-            background-color: red;
+            background-color: #f87171;
             color: white;
+            border-color: #ef4444;
         }
 
         .incorrect:hover {
-            background-color: rgba(255, 0, 0, 0.80);
+            background-color: #ef4444;
+        }
+
+        .skipped {
+            background-color: #fb923c;
+            color: white;
+            border-color: #f97316;
+        }
+
+        .skipped:hover {
+            background-color: #f97316;
+        }
+
+        .modal {
+            transition: all 0.3s ease;
         }
     </style>
 </head>
 
-<body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-800 to-pink-200 font-sans">
-
-
-    <div class="w-[90%] max-w-[600px] rounded-md shadow-sm py-2 px-4 bg-white">
-        <h1 class="text-left text-2xl mb-6 font-bold text-gray-700 border-b-2 border-gray-300 pb-4">Quiz-Game</h1>
-        <div class="py-2">
-            <h2 class="text-lg font-semibold text-gray-700" id="questions"></h2>
-            <div id="answers" class="flex flex-col gap-3 mt-3">
+<body class="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 font-sans flex items-center justify-center p-4">
+    <!-- Main Quiz Container -->
+    <div class="w-full max-w-2xl bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl overflow-hidden transition-all duration-500 transform" id="quiz-container">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-indigo-600 to-pink-500 p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight">Quiz Time</h1>
+                    <p class="text-indigo-100 mt-1">Test your knowledge!</p>
+                </div>
+                <div class="relative">
+                    <div class="h-16 w-16 bg-white/20 rounded-full flex items-center justify-center shadow-lg ring-4 ring-white/10 animate-pulse-slow">
+                        <i class="fa-solid fa-stopwatch text-white text-xl"></i>
+                        <span class="text-white ml-1 text-lg font-bold" id="time">60</span>
+                    </div>
+                </div>
             </div>
-            <button id="next-btn"
-                class="px-4 py-2 w-[200px] mx-auto block bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-all duration-300 mt-6">Next</button>
         </div>
 
+        <!-- Quiz Content -->
+        <div class="p-6 sm:p-8">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 leading-tight" id="questions"></h2>
+                <div id="answers" class="grid gap-3 mt-6"></div>
+            </div>
+
+            <div class="mt-8 flex flex-col sm:flex-row items-center justify-between border-t border-gray-200 pt-6">
+                <div class="flex items-center gap-2 mb-4 sm:mb-0">
+                    <span class="text-xl font-bold text-indigo-600" id="current">1</span>
+                    <span class="text-gray-500">of</span>
+                    <span class="text-xl font-bold text-gray-700" id="lengthall">4</span>
+                </div>
+                <div class="flex gap-3">
+                    <button id="history-btn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all font-medium hidden">
+                        <i class="fas fa-history mr-2"></i>History
+                    </button>
+                    <button id="next-btn" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-pink-500 text-white rounded-lg hover:from-indigo-700 hover:to-pink-600 transition-all font-bold shadow-md">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Username Modal -->
+    <div id="username-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden modal">
+        <div class="bg-white rounded-xl p-6 w-full max-w-md">
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">Quiz Completed!</h3>
+            <p class="text-gray-600 mb-2">Your score: <span class="font-bold text-indigo-600" id="final-score"></span></p>
+            <div class="mb-4">
+                <label for="username" class="block text-gray-700 mb-2">Enter your name:</label>
+                <input type="text" id="username" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Your name">
+            </div>
+            <button id="save-score-btn" class="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all font-bold">
+                Save Score
+            </button>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="history-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden modal">
+        <div class="bg-white rounded-xl p-6 w-full max-w-md max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-2xl font-bold text-gray-800">Score History</h3>
+                <button id="close-history" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="scores-list" class="space-y-3">
+                <!-- Scores will be inserted here -->
+            </div>
+            <button id="clear-history" class="mt-4 w-full py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-all font-medium">
+                Clear History
+            </button>
+        </div>
     </div>
 
     <script>
+        // DOM Elements
+        const QuestionElement = document.getElementById('questions');
+        const AnswerButtons = document.getElementById('answers');
+        const NextButton = document.getElementById('next-btn');
+        const HistoryButton = document.getElementById('history-btn');
+        const TimeDisplay = document.getElementById('time');
+        const Current = document.getElementById('current');
+        const AllQuestions = document.getElementById('lengthall');
+        const QuizContainer = document.getElementById('quiz-container');
+        const UsernameModal = document.getElementById('username-modal');
+        const HistoryModal = document.getElementById('history-modal');
+        const FinalScoreDisplay = document.getElementById('final-score');
+        const UsernameInput = document.getElementById('username');
+        const SaveScoreBtn = document.getElementById('save-score-btn');
+        const ScoresList = document.getElementById('scores-list');
+        const CloseHistoryBtn = document.getElementById('close-history');
+        const ClearHistoryBtn = document.getElementById('clear-history');
+
+        // Quiz Data
         let Questions = [
             {
                 question: 'Waa maxay caasimadda dalka France?',
@@ -84,13 +191,19 @@
             },
         ];
 
-        let QuestionElement = document.getElementById('questions');
-        let AnswerButtons = document.getElementById('answers');
-        let NextButton = document.getElementById('next-btn');
-
+        // Quiz State
         let CurrentQuestionIndex = 0;
-        let Score = 0
+        let Score = 0;
+        let timerInterval;
+        let timeLeft = 60;
 
+        // Initialize the quiz
+        document.addEventListener("DOMContentLoaded", () => {
+            StartQuiz();
+            LoadHistory();
+        });
+
+        // Quiz Functions
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -101,70 +214,186 @@
         const StartQuiz = () => {
             CurrentQuestionIndex = 0;
             Score = 0;
-            shuffle(Questions)
+            shuffle(Questions);
             ShowQuestion();
             NextButton.innerHTML = 'Next';
+            HistoryButton.classList.add('hidden');
         }
 
         const ShowQuestion = () => {
-            ResetState()
-            let CurrentQuestion = Questions[CurrentQuestionIndex]
-            let QuestionNo = CurrentQuestionIndex + 1
-            QuestionElement.innerHTML = QuestionNo + ". " + CurrentQuestion.question
-            shuffle(CurrentQuestion.answers)
+            ResetState();
+            let CurrentQuestion = Questions[CurrentQuestionIndex];
+            let QuestionNo = CurrentQuestionIndex + 1;
+            QuestionElement.innerHTML = QuestionNo + ". " + CurrentQuestion.question;
+            shuffle(CurrentQuestion.answers);
+            Current.innerHTML = QuestionNo;
+            AllQuestions.innerHTML = Questions.length;
 
             CurrentQuestion.answers.forEach(answer => {
-                let AnswerButton = document.createElement('button')
-                AnswerButton.className = "p-2 border-2 rounded-md text-gray-800 border-gray-300 bg-white hover:bg-black cursor-pointer hover:text-white transition-all duration-300 text-lg font-medium text-left"
-                AnswerButton.innerHTML = answer.text
+                let AnswerButton = document.createElement('button');
+                AnswerButton.className = "p-4 border-2 rounded-lg text-gray-800 border-gray-300 bg-white hover:bg-gray-50 cursor-pointer transition-all duration-200 text-lg font-semibold text-left hover:shadow-md hover:border-indigo-300 hover:translate-x-1";
+                AnswerButton.innerHTML = answer.text;
                 if (answer.correct) {
-                    AnswerButton.dataset.correct = answer.correct
+                    AnswerButton.dataset.correct = answer.correct;
                 }
-                AnswerButton.addEventListener("click", SelectAnswer)
+                AnswerButton.addEventListener("click", SelectAnswer);
+                AnswerButtons.appendChild(AnswerButton);
+            });
 
-                AnswerButtons.appendChild(AnswerButton)
-            })
-
+            startTimer();
         }
+
         const ResetState = () => {
-            NextButton.style.display = "none"
+            NextButton.style.display = "block";
             while (AnswerButtons.firstChild) {
-                AnswerButtons.removeChild(AnswerButtons.firstChild)
+                AnswerButtons.removeChild(AnswerButtons.firstChild);
             }
-
+            clearInterval(timerInterval);
+            timeLeft = 60;
+            TimeDisplay.textContent = timeLeft;
         }
+
         const SelectAnswer = (e) => {
-            let SelectButtonAnswer = e.target
-            let CorrectAnswer = SelectButtonAnswer.dataset.correct === "true"
+            clearInterval(timerInterval);
+            let SelectButtonAnswer = e.target;
+            let CorrectAnswer = SelectButtonAnswer.dataset.correct === "true";
 
             if (CorrectAnswer) {
-                SelectButtonAnswer.className = 'p-2 border-2 rounded-md text-white border-gray-300 bg-lime-400 cursor-not-allowed  transition-all duration-300 text-lg font-medium text-left';
-                Score++
+                SelectButtonAnswer.className = 'p-4 border-2 rounded-lg text-white border-green-500 bg-green-400 cursor-not-allowed transition-all duration-300 text-lg font-semibold text-left shadow-md';
+                Score++;
             }
             else {
-                SelectButtonAnswer.className = 'p-2 border-2 rounded-md text-white border-gray-300 bg-red-500 cursor-not-allowed transition-all duration-300 text-lg font-medium text-left';
+                SelectButtonAnswer.className = 'p-4 border-2 rounded-lg text-white border-red-500 bg-red-400 cursor-not-allowed transition-all duration-300 text-lg font-semibold text-left shadow-md';
             }
             Array.from(AnswerButtons.children).forEach(button => {
                 button.disabled = true;
 
                 if (button.dataset.correct === "true") {
-                    button.className = 'p-2 border-2 rounded-md text-white border-gray-300 bg-lime-400 cursor-not-allowed transition-all duration-300 text-lg font-medium text-left';
+                    button.className = 'p-4 border-2 rounded-lg text-white border-green-500 bg-green-400 cursor-not-allowed transition-all duration-300 text-lg font-semibold text-left shadow-md';
                 } else if (button == SelectButtonAnswer) {
-                    button.className = ' p-2 border-2 rounded-md text-white border-gray-300 bg-red-500 cursor-not-allowed transition-all duration-300 text-lg font-medium text-left';
+                    button.className = 'p-4 border-2 rounded-lg text-white border-red-500 bg-red-400 cursor-not-allowed transition-all duration-300 text-lg font-semibold text-left shadow-md';
                 }
                 else {
-                    button.className = 'p-2 border-2 rounded-md text-gray-500 border-gray-300 bg-gray-200 cursor-not-allowed transition-all duration-300 text-lg font-medium text-left';
+                    button.className = 'p-4 border-2 rounded-lg text-gray-500 border-gray-300 bg-gray-100 cursor-not-allowed transition-all duration-300 text-lg font-medium text-left';
                 }
-            })
-            NextButton.style.display = "block"
-        }
-        const ShowScore = () => {
-            ResetState()
-            QuestionElement.innerHTML = `You Scored ${Score} out of ${Questions.length} (${(Score / Questions.length) * 100}%)`
-            NextButton.innerHTML = 'Play Again'
-            NextButton.style.display = "block"
+            });
         }
 
+        const ShowScore = () => {
+            ResetState();
+            QuestionElement.innerHTML = `You scored <span class="text-indigo-600 font-bold">${Score}</span> out of <span class="font-bold">${Questions.length}</span> (<span class="text-pink-600 font-bold">${Math.round((Score / Questions.length) * 100)}%</span>)`;
+            NextButton.innerHTML = 'Play Again';
+            HistoryButton.classList.remove('hidden');
+            
+            // Show username modal
+            FinalScoreDisplay.textContent = `${Score}/${Questions.length} (${Math.round((Score / Questions.length) * 100)}%)`;
+            UsernameModal.classList.remove('hidden');
+            QuizContainer.classList.add('blur-sm');
+        }
+
+        const startTimer = () => {
+            clearInterval(timerInterval);
+            timeLeft = 60;
+            TimeDisplay.textContent = timeLeft;
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                TimeDisplay.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    skipQuestion();
+                }
+            }, 1000);
+        }
+
+        const skipQuestion = () => {
+            Array.from(AnswerButtons.children).forEach(button => {
+                button.disabled = true;
+                if (button.dataset.correct === "true") {
+                    button.className = 'p-4 border-2 rounded-lg text-white border-green-500 bg-green-400 cursor-not-allowed transition-all duration-300 text-lg font-semibold text-left shadow-md skipped';
+                } else {
+                    button.className = 'p-4 border-2 rounded-lg text-gray-500 border-gray-300 bg-gray-100 cursor-not-allowed transition-all duration-300 text-lg font-medium text-left skipped';
+                }
+            });
+        }
+
+        // Score History Functions
+        const SaveScore = () => {
+            const username = UsernameInput.value.trim();
+            if (!username) {
+                alert("Please enter your name!");
+                return;
+            }
+
+            const scoreData = {
+                name: username,
+                score: Score,
+                total: Questions.length,
+                percentage: Math.round((Score / Questions.length) * 100),
+                date: new Date().toLocaleString()
+            };
+
+            // Get existing scores or initialize empty array
+            const scores = JSON.parse(localStorage.getItem('quizScores')) || [];
+            
+            // Add new score
+            scores.push(scoreData);
+            
+            // Save back to localStorage
+            localStorage.setItem('quizScores', JSON.stringify(scores));
+            
+            // Close modal
+            UsernameModal.classList.add('hidden');
+            QuizContainer.classList.remove('blur-sm');
+            
+            // Update history display
+            LoadHistory();
+        }
+
+        const LoadHistory = () => {
+            const scores = JSON.parse(localStorage.getItem('quizScores')) || [];
+            
+            // Sort by percentage (descending)
+            scores.sort((a, b) => b.percentage - a.percentage);
+            
+            // Clear current list
+            ScoresList.innerHTML = '';
+            
+            if (scores.length === 0) {
+                ScoresList.innerHTML = '<p class="text-gray-500 text-center py-4">No scores yet</p>';
+                return;
+            }
+            
+            // Add each score to the list
+            scores.forEach((score, index) => {
+                const scoreElement = document.createElement('div');
+                scoreElement.className = `p-3 rounded-lg border ${index === 0 ? 'bg-yellow-50 border-yellow-200' : 'bg-gray-50 border-gray-200'}`;
+                scoreElement.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span class="font-bold ${index === 0 ? 'text-yellow-600' : 'text-gray-700'}">${score.name}</span>
+                            <span class="text-sm text-gray-500 ml-2">${score.date}</span>
+                        </div>
+                        <span class="font-bold ${index === 0 ? 'text-yellow-600' : 'text-indigo-600'}">${score.percentage}%</span>
+                    </div>
+                    <div class="mt-1 text-sm text-gray-600">
+                        ${score.score}/${score.total} correct answers
+                    </div>
+                    ${index === 0 ? '<div class="mt-1 text-xs text-yellow-600 font-bold"><i class="fas fa-trophy mr-1"></i>Top Score!</div>' : ''}
+                `;
+                ScoresList.appendChild(scoreElement);
+            });
+        }
+
+        const ClearHistory = () => {
+            if (confirm("Are you sure you want to clear all score history?")) {
+                localStorage.removeItem('quizScores');
+                LoadHistory();
+            }
+        }
+
+        // Event Listeners
         NextButton.addEventListener("click", () => {
             if (NextButton.innerHTML === "Next") {
                 if (CurrentQuestionIndex < Questions.length - 1) {
@@ -177,10 +406,27 @@
                 StartQuiz();
             }
         });
-        document.addEventListener("DOMContentLoaded", () => {
-            StartQuiz();
-        })
 
+        HistoryButton.addEventListener("click", () => {
+            HistoryModal.classList.remove('hidden');
+            QuizContainer.classList.add('blur-sm');
+        });
+
+        SaveScoreBtn.addEventListener("click", SaveScore);
+
+        CloseHistoryBtn.addEventListener("click", () => {
+            HistoryModal.classList.add('hidden');
+            QuizContainer.classList.remove('blur-sm');
+        });
+
+        ClearHistoryBtn.addEventListener("click", ClearHistory);
+
+        // Allow Enter key to save score
+        UsernameInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                SaveScore();
+            }
+        });
     </script>
 </body>
 
