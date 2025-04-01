@@ -318,14 +318,13 @@
             });
         }
 
-        // Score History Functions
+        
         const SaveScore = () => {
             const username = UsernameInput.value.trim();
             if (!username) {
                 alert("Please enter your name!");
                 return;
             }
-
             const scoreData = {
                 name: username,
                 score: Score,
@@ -334,30 +333,30 @@
                 date: new Date().toLocaleString()
             };
 
-            // Get existing scores or initialize empty array
+         
             const scores = JSON.parse(localStorage.getItem('quizScores')) || [];
-            
-            // Add new score
+         
             scores.push(scoreData);
             
-            // Save back to localStorage
+    
             localStorage.setItem('quizScores', JSON.stringify(scores));
             
             // Close modal
             UsernameModal.classList.add('hidden');
             QuizContainer.classList.remove('blur-sm');
+            document.getElementById('username').value = ''
+
             
-            // Update history display
+           
             LoadHistory();
         }
 
         const LoadHistory = () => {
             const scores = JSON.parse(localStorage.getItem('quizScores')) || [];
-            
-            // Sort by percentage (descending)
+           
             scores.sort((a, b) => b.percentage - a.percentage);
             
-            // Clear current list
+         
             ScoresList.innerHTML = '';
             
             if (scores.length === 0) {
@@ -393,7 +392,6 @@
             }
         }
 
-        // Event Listeners
         NextButton.addEventListener("click", () => {
             if (NextButton.innerHTML === "Next") {
                 if (CurrentQuestionIndex < Questions.length - 1) {
