@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="input.css">
+    <title>Quiz-Game</title>
+    <style>
+        .correct {
+            background-color: lime;
+            color: white;
+        }
+
+        .correct:hover {
+            background-color: rgba(0, 255, 0, 0.80);
+        }
+
+        .incorrect {
+            background-color: red;
+            color: white;
+        }
+
+        .incorrect:hover {
+            background-color: rgba(255, 0, 0, 0.80);
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-800 to-pink-200 font-sans">
+
+
+    <div class="w-[90%] max-w-[600px] rounded-md shadow-sm py-2 px-4 bg-white">
+        <h1 class="text-left text-2xl mb-6 font-bold text-gray-700 border-b-2 border-gray-300 pb-4">Quiz-Game</h1>
+        <div class="py-2">
+            <h2 class="text-lg font-semibold text-gray-700" id="questions"></h2>
+            <div id="answers" class="flex flex-col gap-3 mt-3">
+            </div>
+            <button id="next-btn"
+                class="px-4 py-2 w-[200px] mx-auto block bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-all duration-300 mt-6">Next</button>
+        </div>
+
+    </div>
+
+    <script>
+        let Questions = [
+            {
+                question: 'Waa maxay caasimadda dalka France?',
+                answers: [
+                    { text: 'Berlin', correct: false },
+                    { text: 'Paris', correct: true },
+                    { text: 'Madrid', correct: false },
+                    { text: 'Rome', correct: false }
+                ]
+            },
+            {
+                question: 'Xiddigaha kubadda cagta, yaa haysta rekoodhka goolasha ugu badan ee FIFA World Cup?',
+                answers: [
+                    { text: 'Cristiano Ronaldo', correct: false },
+                    { text: 'Pelé', correct: false },
+                    { text: 'Miroslav Klose', correct: true },
+                    { text: 'Lionel Messi', correct: false }
+                ]
+            },
+            {
+                question: 'Waa maxay xawaaraha iftiinka?',
+                answers: [
+                    { text: '300,000 km/s', correct: true },
+                    { text: '150,000 km/s', correct: false },
+                    { text: '1,000,000 km/s', correct: false },
+                    { text: '30,000 km/s', correct: false }
+                ]
+            },
+            {
+                question: 'Dhulka, biyuhu boqolkiiba imisa ayay ka yihiin?',
+                answers: [
+                    { text: '50%', correct: false },
+                    { text: '71%', correct: true },
+                    { text: '80%', correct: false },
+                    { text: '60%', correct: false }
+                ]
+            },
+        ];
+
+        let QuestionElement = document.getElementById('questions');
+        let AnswerButtons = document.getElementById('answers');
+        let NextButton = document.getElementById('next-btn');
+
+        let CurrentQuestionIndex = 0;
+        let Score = 0
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        const StartQuiz = () => {
+            CurrentQuestionIndex = 0;
+            Score = 0;
+            shuffle(Questions)
+            ShowQuestion();
+            NextButton.innerHTML = 'Next';
+        }
+
+        const ShowQuestion = () => {
+            ResetState()
+            let CurrentQuestion = Questions[CurrentQuestionIndex]
+            let QuestionNo = CurrentQuestionIndex + 1
+            QuestionElement.innerHTML = QuestionNo + ". " + CurrentQuestion.question
+            shuffle(CurrentQuestion.answers)
+
+            CurrentQuestion.answers.forEach(answer => {
+                let AnswerButton = document.createElement('button')
+                AnswerButton.className = "p-2 border-2 rounded-md text-gray-800 border-gray-300 bg-white hover:bg-black cursor-pointer hover:text-white transition-all duration-300 text-lg font-medium text-left"
+                AnswerButton.innerHTML = answer.text
+                if (answer.correct) {
+                    AnswerButton.dataset.correct = answer.correct
+                }
+                AnswerButton.addEventListener("click", SelectAnswer)
+
+                AnswerButtons.appendChild(AnswerButton)
+            })
+
+        }
+        const ResetState = () => {
+            NextButton.style.display = "none"
+            while (AnswerButtons.firstChild) {
+                AnswerButtons.removeChild(AnswerButtons.firstChild)
+            }
+
+        }
+        const SelectAnswer = (e) => {
+            let SelectButtonAnswer = e.target
+            let CorrectAnswer = SelectButtonAnswer.dataset.correct === "true"
+
+            if (CorrectAnswer) {
+                SelectButtonAnswer.className = 'p-2 border-2 rounded-md text-white border-gray-300 bg-lime-400 cursor-not-allowed  transition-all duration-300 text-lg font-medium text-left';
+                Score++
+            }
+            else {
+                SelectButtonAnswer.className = 'p-2 border-2 rounded-md text-white border-gray-300 bg-red-500 cursor-not-allowed transition-all duration-300 text-lg font-medium text-left';
+            }
+            Array.from(AnswerButtons.children).forEach(button => {
+                button.disabled = true;
+
+                if (button.dataset.correct === "true") {
+                    button.className = 'p-2 border-2 rounded-md text-white border-gray-300 bg-lime-400 cursor-not-allowed transition-all duration-300 text-lg font-medium text-left';
+                } else if (button == SelectButtonAnswer) {
+                    button.className = ' p-2 border-2 rounded-md text-white border-gray-300 bg-red-500 cursor-not-allowed transition-all duration-300 text-lg font-medium text-left';
+                }
+                else {
+                    button.className = 'p-2 border-2 rounded-md text-gray-500 border-gray-300 bg-gray-200 cursor-not-allowed transition-all duration-300 text-lg font-medium text-left';
+                }
+            })
+            NextButton.style.display = "block"
+        }
+        const ShowScore = () => {
+            ResetState()
+            QuestionElement.innerHTML = `You Scored ${Score} out of ${Questions.length} (${(Score / Questions.length) * 100}%)`
+            NextButton.innerHTML = 'Play Again'
+            NextButton.style.display = "block"
+        }
+
+        NextButton.addEventListener("click", () => {
+            if (NextButton.innerHTML === "Next") {
+                if (CurrentQuestionIndex < Questions.length - 1) {
+                    CurrentQuestionIndex++;
+                    ShowQuestion();
+                } else if (CurrentQuestionIndex === Questions.length - 1) {
+                    ShowScore();
+                }
+            } else if (NextButton.innerHTML === "Play Again") {
+                StartQuiz();
+            }
+        });
+        document.addEventListener("DOMContentLoaded", () => {
+            StartQuiz();
+        })
+
+    </script>
+</body>
+
+</html>
