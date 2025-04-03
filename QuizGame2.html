@@ -364,6 +364,7 @@
         // Quiz State
         let currentQuestionIndex = 0;
         let isAnswerCorrect = false;
+        let Hint = 3
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -438,6 +439,7 @@
                 isAnswerCorrect = normalizedUserInput.includes(normalizedCorrectCSS);
 
                 if (isAnswerCorrect) {
+                    Hint ++
                     showFeedback("Correct! Well done!", true);
                     correctAnswerElement.classList.add("hidden");
                     nextBtn.disabled = false;
@@ -467,12 +469,23 @@
         // Show hint for current question
         const showHint = () => {
             const currentQuestion = cssLayoutQuestions[currentQuestionIndex];
+            if (Hint <= 0) {
+                alert("You don't have any hints left.");
+                return;
+            }
+            Hint -= 1;
+
             if (currentQuestion.hint) {
                 hintElement.innerHTML = currentQuestion.hint;
                 hintElement.classList.remove("hidden");
                 hintElement.classList.add("hint");
+                alert(`You have ${Hint} hints left.`);
+            } else {
+                alert("No hint available for this question.");
             }
         };
+
+        
 
         // Navigate to next question
         const nextQuestion = () => {
