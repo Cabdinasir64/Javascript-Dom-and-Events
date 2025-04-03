@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+
+    </style>
+</head>
+
+<body class="bg-gray-200 p-8 min-h-screen flex items-center justify-center">
+
+
+    <textarea id="inputField" rows="10" cols="50" placeholder="Enter some text..."
+        class="resize-none px-2 py-1.5 bg-gray-200 border border-gray-800 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-700 w-full max-w-[600px]"></textarea>
+
+
+
+    <script>
+        // script.js
+        const inputField = document.getElementById('inputField');
+        let undoStack = []; 
+
+       
+        function saveState() {
+            undoStack.push(inputField.value);
+        }
+
+      
+        inputField.addEventListener('input', function () {
+            saveState();
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.ctrlKey && event.key === 'z') {
+                event.preventDefault();
+                if (undoStack.length > 0) {
+                    const lastState = undoStack.pop();
+                    inputField.value = lastState; 
+                }
+            }
+        })
+        saveState();
+
+
+    </script>
+</body>
+
+</html>
