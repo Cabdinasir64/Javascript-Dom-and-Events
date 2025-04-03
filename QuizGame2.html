@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive CSS Layout Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #target-container {
+            width: 300px;
+            height: 300px;
+            border: 2px solid gray;
+            margin-bottom: 20px;
+            position: relative;
+            background-color: #f8fafc;
+        }
+
+        #movable-div {
+            width: 50px;
+            height: 50px;
+            background-color: #3b82f6;
+            transition: all 0.3s ease;
+        }
+
+        #movable-div-2 {
+            width: 50px;
+            height: 50px;
+            background-color: #10b981;
+            transition: all 0.3s ease;
+        }
+
+        #movable-div-3 {
+            width: 50px;
+            height: 50px;
+            background-color: #f59e0b;
+            transition: all 0.3s ease;
+        }
+
+        .correct-answer {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+        }
+
+        .wrong-answer {
+            background-color: #fee2e2;
+            border-left: 4px solid #ef4444;
+        }
+
+        .hint {
+            background-color: #e0f2fe;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .code-block {
+            font-family: monospace;
+            background-color: #f1f5f9;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 p-8">
+    <div class="max-w-3xl mx-auto">
+        <h1 class="text-2xl font-bold mb-4 text-center">Interactive CSS Layout Learning</h1>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div id="progress-container" class="mb-4">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-sm font-medium">Progress</span>
+                    <span id="progress-text" class="text-sm font-medium">0/40</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-6 p-4 bg-gray-50 rounded-lg">
+                <p class="font-semibold text-lg mb-2">Question:</p>
+                <p id="current-question" class="text-gray-800"></p>
+                <div id="hint" class="mt-2 text-sm text-gray-600 hidden"></div>
+            </div>
+
+            <div id="target-container" class="relative mx-auto mb-6">
+                <div id="movable-div"></div>
+                <div id="movable-div-2" class="hidden"></div>
+                <div id="movable-div-3" class="hidden"></div>
+            </div>
+
+            <div class="mb-4">
+                <label for="css-input" class="block text-gray-700 text-sm font-bold mb-2">Enter CSS:</label>
+                <textarea id="css-input"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight resize-none focus:outline-none focus:shadow-outline"
+                    rows="4"
+                    placeholder="Example: display: flex; justify-content: center; align-items: center;"></textarea>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <button id="hint-btn"
+                    class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Show Hint
+                </button>
+
+                <div class="flex gap-2">
+                    <button id="prev-btn"
+                        class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+                        disabled>
+                        Previous
+                    </button>
+
+                    <button id="apply-css-btn"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Check Answer
+                    </button>
+
+                    <button id="next-btn"
+                        class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+                        disabled>
+                        Next
+                    </button>
+                </div>
+            </div>
+
+            <div id="feedback" class="mt-4 p-3 rounded hidden"></div>
+
+            <div id="correct-answer" class="mt-4 p-3 bg-gray-100 rounded hidden">
+                <p class="font-semibold">Correct Answer:</p>
+                <p id="correct-answer-text" class="font-mono text-sm mt-1"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const cssLayoutQuestions = [
+            // Flexbox Questions
+            {
+                question: "Make the container a flex container.",
+                correctCSS: "display: flex;",
+                hint: "Use the <span class='code-block'>display</span> property with value <span class='code-block'>flex</span>."
+            },
+            {
+                question: "Arrange the items in the container horizontally (row).",
+                correctCSS: "display: flex; flex-direction: row;",
+                hint: "Use <span class='code-block'>flex-direction: row;</span> (this is the default value for flex containers)."
+            },
+            {
+                question: "Arrange the items in the container vertically (column).",
+                correctCSS: "display: flex; flex-direction: column;",
+                hint: "Use <span class='code-block'>flex-direction: column;</span> to stack items vertically."
+            },
+            {
+                question: "Align the items to the start of the main axis.",
+                correctCSS: "display: flex; justify-content: flex-start;",
+                hint: "Use <span class='code-block'>justify-content: flex-start;</span> to align items at the start."
+            },
+            {
+                question: "Align the items to the end of the main axis.",
+                correctCSS: "display: flex; justify-content: flex-end;",
+                hint: "Use <span class='code-block'>justify-content: flex-end;</span> to align items at the end."
+            },
+            {
+                question: "Align the items to the center of the main axis.",
+                correctCSS: "display: flex; justify-content: center;",
+                hint: "Use <span class='code-block'>justify-content: center;</span> to center items along the main axis."
+            },
+            {
+                question: "Distribute the items with equal space around them along the main axis.",
+                correctCSS: "display: flex; justify-content: space-around;",
+                hint: "Use <span class='code-block'>justify-content: space-around;</span> for equal space around items."
+            },
+            {
+                question: "Distribute the items with equal space between them along the main axis.",
+                correctCSS: "display: flex; justify-content: space-between;",
+                hint: "Use <span class='code-block'>justify-content: space-between;</span> for equal space between items."
+            },
+            {
+                question: "Distribute the items with equal space around each item, including the edges of the container.",
+                correctCSS: "display: flex; justify-content: space-evenly;",
+                hint: "Use <span class='code-block'>justify-content: space-evenly;</span> for equal space including edges."
+            },
+            {
+                question: "Align the items to the start of the cross axis.",
+                correctCSS: "display: flex; align-items: flex-start;",
+                hint: "Use <span class='code-block'>align-items: flex-start;</span> to align items at the start of the cross axis."
+            },
+            {
+                question: "Align the items to the end of the cross axis.",
+                correctCSS: "display: flex; align-items: flex-end;",
+                hint: "Use <span class='code-block'>align-items: flex-end;</span> to align items at the end of the cross axis."
+            },
+            {
+                question: "Align the items to the center of the cross axis.",
+                correctCSS: "display: flex; align-items: center;",
+                hint: "Use <span class='code-block'>align-items: center;</span> to center items along the cross axis."
+            },
+            {
+                question: "Stretch the items to fill the container along the cross axis.",
+                correctCSS: "display: flex; align-items: stretch;",
+                hint: "Use <span class='code-block'>align-items: stretch;</span> to stretch items to fill the container."
+            },
+            {
+                question: "Align the items based on their baseline along the cross axis.",
+                correctCSS: "display: flex; align-items: baseline;",
+                hint: "Use <span class='code-block'>align-items: baseline;</span> to align items by their text baseline."
+            },
+            {
+                question: "Allow the flex items to wrap onto the next line if there is not enough space.",
+                correctCSS: "display: flex; flex-wrap: wrap;",
+                hint: "Use <span class='code-block'>flex-wrap: wrap;</span> to allow items to wrap to new lines."
+            },
+            {
+                question: "Prevent the flex items from wrapping onto the next line.",
+                correctCSS: "display: flex; flex-wrap: nowrap;",
+                hint: "Use <span class='code-block'>flex-wrap: nowrap;</span> to prevent wrapping (this is the default)."
+            },
+            {
+                question: "Wrap the flex items onto the previous line.",
+                correctCSS: "display: flex; flex-wrap: wrap-reverse;",
+                hint: "Use <span class='code-block'>flex-wrap: wrap-reverse;</span> to wrap items in reverse order."
+            },
+            {
+                question: "Align the lines of flex items to the start of the cross axis when there is extra space.",
+                correctCSS: "display: flex; flex-wrap: wrap; align-content: flex-start;",
+                hint: "Use <span class='code-block'>align-content: flex-start;</span> with wrapping enabled."
+            },
+            {
+                question: "Align the lines of flex items to the end of the cross axis when there is extra space.",
+                correctCSS: "display: flex; flex-wrap: wrap; align-content: flex-end;",
+                hint: "Use <span class='code-block'>align-content: flex-end;</span> with wrapping enabled."
+            },
+            {
+                question: "Align the lines of flex items to the center of the cross axis when there is extra space.",
+                correctCSS: "display: flex; flex-wrap: wrap; align-content: center;",
+                hint: "Use <span class='code-block'>align-content: center;</span> with wrapping enabled."
+            },
+            {
+                question: "Distribute the lines of flex items with equal space around them along the cross axis.",
+                correctCSS: "display: flex; flex-wrap: wrap; align-content: space-around;",
+                hint: "Use <span class='code-block'>align-content: space-around;</span> with wrapping enabled."
+            },
+            {
+                question: "Distribute the lines of flex items with equal space between them along the cross axis.",
+                correctCSS: "display: flex; flex-wrap: wrap; align-content: space-between;",
+                hint: "Use <span class='code-block'>align-content: space-between;</span> with wrapping enabled."
+            },
+            {
+                question: "Distribute the lines of flex items with equal space around each line, including the edges of the container.",
+                correctCSS: "display: flex; flex-wrap: wrap; align-content: space-evenly;",
+                hint: "Use <span class='code-block'>align-content: space-evenly;</span> with wrapping enabled."
+            },
+            {
+                question: "Make the blue flex item grow to fill the available space.",
+                correctCSS: "flex-grow: 1;",
+                target: "movable-div",
+                hint: "Apply <span class='code-block'>flex-grow: 1;</span> to the blue box."
+            },
+            {
+                question: "Prevent the blue flex item from shrinking.",
+                correctCSS: "flex-shrink: 0;",
+                target: "movable-div",
+                hint: "Apply <span class='code-block'>flex-shrink: 0;</span> to the blue box."
+            },
+            {
+                question: "Set the initial main size of the blue flex item to 100 pixels.",
+                correctCSS: "flex-basis: 100px;",
+                target: "movable-div",
+                hint: "Apply <span class='code-block'>flex-basis: 100px;</span> to the blue box."
+            },
+            {
+                question: "Use the shorthand property to set flex-grow to 1, flex-shrink to 0, and flex-basis to 100px on the blue box.",
+                correctCSS: "flex: 1 0 100px;",
+                target: "movable-div",
+                hint: "Apply <span class='code-block'>flex: 1 0 100px;</span> to the blue box."
+            },
+            // Grid Questions
+            {
+                question: "Make the container a grid container.",
+                correctCSS: "display: grid;",
+                hint: "Use the <span class='code-block'>display</span> property with value <span class='code-block'>grid</span>."
+            },
+            {
+                question: "Create a grid with 3 columns of equal width.",
+                correctCSS: "display: grid; grid-template-columns: 1fr 1fr 1fr;",
+                hint: "Use <span class='code-block'>grid-template-columns: 1fr 1fr 1fr;</span> for 3 equal columns."
+            },
+            {
+                question: "Create a grid with 2 rows where the first row is 100px tall and the second takes remaining space.",
+                correctCSS: "display: grid; grid-template-rows: 100px 1fr;",
+                hint: "Use <span class='code-block'>grid-template-rows: 100px 1fr;</span> for this row configuration."
+            },
+            {
+                question: "Position the blue box in the first column and first row.",
+                correctCSS: "grid-column: 1; grid-row: 1;",
+                target: "movable-div",
+                hint: "Apply <span class='code-block'>grid-column: 1;</span> and <span class='code-block'>grid-row: 1;</span> to the blue box."
+            },
+            {
+                question: "Make the blue box span 2 columns.",
+                correctCSS: "grid-column: span 2;",
+                target: "movable-div",
+                hint: "Apply <span class='code-block'>grid-column: span 2;</span> to the blue box."
+            },
+            // Position Questions
+            {
+                question: "Position the blue box absolutely in the top-right corner of the container.",
+                correctCSS: "position: absolute; top: 0; right: 0;",
+                target: "movable-div",
+                hint: "Use <span class='code-block'>position: absolute;</span> with <span class='code-block'>top: 0;</span> and <span class='code-block'>right: 0;</span>."
+            },
+            {
+                question: "Position the blue box fixed to the bottom of the viewport.",
+                correctCSS: "position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);",
+                target: "movable-div",
+                hint: "Use <span class='code-block'>position: fixed;</span> with <span class='code-block'>bottom: 0;</span> and centering techniques."
+            },
+            // Multiple Items Questions
+            {
+                question: "Display all three boxes in a row with space between them.",
+                correctCSS: "display: flex; justify-content: space-between;",
+                setup: function () {
+                    document.getElementById('movable-div-2').classList.remove('hidden');
+                    document.getElementById('movable-div-3').classList.remove('hidden');
+                },
+                cleanup: function () {
+                    document.getElementById('movable-div-2').classList.add('hidden');
+                    document.getElementById('movable-div-3').classList.add('hidden');
+                },
+                hint: "Use <span class='code-block'>display: flex;</span> with <span class='code-block'>justify-content: space-between;</span>."
+            },
+            {
+                question: "Stack all three boxes vertically in the center of the container.",
+                correctCSS: "display: flex; flex-direction: column; align-items: center;",
+                setup: function () {
+                    document.getElementById('movable-div-2').classList.remove('hidden');
+                    document.getElementById('movable-div-3').classList.remove('hidden');
+                },
+                cleanup: function () {
+                    document.getElementById('movable-div-2').classList.add('hidden');
+                    document.getElementById('movable-div-3').classList.add('hidden');
+                },
+                hint: "Use <span class='code-block'>flex-direction: column;</span> with <span class='code-block'>align-items: center;</span>."
+            }
+        ];
+
+        // DOM Elements
+        const questionElement = document.getElementById("current-question");
+        const cssInput = document.getElementById("css-input");
+        const container = document.getElementById("target-container");
+        const movableDiv = document.getElementById("movable-div");
+        const movableDiv2 = document.getElementById("movable-div-2");
+        const movableDiv3 = document.getElementById("movable-div-3");
+        const feedbackElement = document.getElementById("feedback");
+        const correctAnswerElement = document.getElementById("correct-answer");
+        const correctAnswerText = document.getElementById("correct-answer-text");
+        const applyCssBtn = document.getElementById("apply-css-btn");
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+        const hintBtn = document.getElementById("hint-btn");
+        const hintElement = document.getElementById("hint");
+        const progressBar = document.getElementById("progress-bar");
+        const progressText = document.getElementById("progress-text");
+
+        // Quiz State
+        let currentQuestionIndex = 0;
+        let isAnswerCorrect = false;
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        // Initialize the quiz
+        const startQuiz = () => {
+            currentQuestionIndex = 0;
+            shuffle(cssLayoutQuestions);
+            updateProgress();
+            showQuestion();
+        };
+
+        // Show current question
+        const showQuestion = () => {
+            const currentQuestion = cssLayoutQuestions[currentQuestionIndex];
+            const questionNumber = currentQuestionIndex + 1;
+            questionElement.textContent = `${questionNumber}. ${currentQuestion.question}`;
+
+            // Reset styles and setup
+            container.removeAttribute("style");
+            movableDiv.removeAttribute("style");
+            movableDiv2.removeAttribute("style");
+            movableDiv3.removeAttribute("style");
+
+            // Hide additional boxes by default
+            movableDiv2.classList.add('hidden');
+            movableDiv3.classList.add('hidden');
+
+            // Run setup if exists
+            if (currentQuestion.setup) {
+                currentQuestion.setup();
+            }
+
+            // Clear input and feedback
+            cssInput.value = "";
+            feedbackElement.classList.add("hidden");
+            correctAnswerElement.classList.add("hidden");
+            hintElement.classList.add("hidden");
+
+            // Update button states
+            prevBtn.disabled = currentQuestionIndex === 0;
+            nextBtn.disabled = true;
+            isAnswerCorrect = false;
+        };
+
+        // Check the user's answer
+        const checkAnswer = () => {
+            const userInput = cssInput.value.trim();
+            const currentQuestion = cssLayoutQuestions[currentQuestionIndex];
+
+            if (!userInput) {
+                showFeedback("Please enter some CSS code", false);
+                return;
+            }
+
+            // Apply the CSS to the appropriate element
+            const targetElement = currentQuestion.target ?
+                document.getElementById(currentQuestion.target) :
+                container;
+
+
+            try {
+                targetElement.style.cssText = userInput;
+
+                // Normalize the CSS strings for comparison
+                const normalizedUserInput = userInput.replace(/\s+/g, '').toLowerCase();
+                const normalizedCorrectCSS = currentQuestion.correctCSS.replace(/\s+/g, '').toLowerCase();
+
+                // Check if the answer is correct
+                isAnswerCorrect = normalizedUserInput.includes(normalizedCorrectCSS);
+
+                if (isAnswerCorrect) {
+                    showFeedback("Correct! Well done!", true);
+                    correctAnswerElement.classList.add("hidden");
+                    nextBtn.disabled = false;
+                } else {
+                    showFeedback("Not quite right. Try again!", false);
+                    showCorrectAnswer();
+                }
+            } catch (e) {
+                showFeedback("Invalid CSS syntax. Please check your code.", false);
+                console.error(e);
+            }
+        };
+
+        // Show feedback message
+        const showFeedback = (message, isCorrect) => {
+            feedbackElement.textContent = message;
+            feedbackElement.classList.remove("hidden", "correct-answer", "wrong-answer");
+            feedbackElement.classList.add(isCorrect ? "correct-answer" : "wrong-answer");
+        };
+
+        // Show the correct answer
+        const showCorrectAnswer = () => {
+            correctAnswerText.textContent = cssLayoutQuestions[currentQuestionIndex].correctCSS;
+            correctAnswerElement.classList.remove("hidden");
+        };
+
+        // Show hint for current question
+        const showHint = () => {
+            const currentQuestion = cssLayoutQuestions[currentQuestionIndex];
+            if (currentQuestion.hint) {
+                hintElement.innerHTML = currentQuestion.hint;
+                hintElement.classList.remove("hidden");
+                hintElement.classList.add("hint");
+            }
+        };
+
+        // Navigate to next question
+        const nextQuestion = () => {
+            // Run cleanup if exists
+            const currentQuestion = cssLayoutQuestions[currentQuestionIndex];
+            if (currentQuestion.cleanup) {
+                currentQuestion.cleanup();
+            }
+
+            if (currentQuestionIndex < cssLayoutQuestions.length - 1) {
+                currentQuestionIndex++;
+                updateProgress();
+                showQuestion();
+            }
+        };
+
+        // Navigate to previous question
+        const prevQuestion = () => {
+            // Run cleanup if exists
+            const currentQuestion = cssLayoutQuestions[currentQuestionIndex];
+            if (currentQuestion.cleanup) {
+                currentQuestion.cleanup();
+            }
+
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                updateProgress();
+                showQuestion();
+            }
+        };
+
+        // Update progress bar
+        const updateProgress = () => {
+            const progress = ((currentQuestionIndex + 1) / cssLayoutQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${currentQuestionIndex + 1}/${cssLayoutQuestions.length}`;
+        };
+
+        // Event Listeners
+        applyCssBtn.addEventListener("click", checkAnswer);
+        nextBtn.addEventListener("click", nextQuestion);
+        prevBtn.addEventListener("click", prevQuestion);
+        hintBtn.addEventListener("click", showHint);
+
+        // Allow pressing Enter to check answer
+        cssInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.ctrlKey) {
+                checkAnswer();
+            }
+        });
+        document.addEventListener("DOMContentLoaded", () => {
+            startQuiz();
+        })
+
+
+    </script>
+</body>
+
+</html>
