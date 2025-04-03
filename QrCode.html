@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+</head>
+
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-96">
+        <h1 class="text-2xl font-bold mb-4 text-center text-gray-800">QR Code Generator</h1>
+        <div class="mb-4">
+            <label for="linkInput" class="block text-gray-700 text-sm font-bold mb-2">Enter Link:</label>
+            <input type="text" id="linkInput"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="https://example.com">
+        </div>
+        <button id="generateBtn"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+            Generate QR Code
+        </button>
+        <div id="qrcodeContainer" class="mt-6 flex justify-center">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const linkInput = document.getElementById('linkInput');
+            const generateBtn = document.getElementById('generateBtn');
+            const qrcodeContainer = document.getElementById('qrcodeContainer');
+
+            generateBtn.addEventListener('click', function () {
+                const link = linkInput.value.trim();
+
+                
+                qrcodeContainer.innerHTML = '';
+
+                if (link) {
+                    const qrcode = new QRCode(qrcodeContainer, {
+                        text: link,
+                        width: 256,
+                        height: 256,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H,
+                    });
+                } else {
+                    qrcodeContainer.innerHTML = '<p class="text-red-500">Please enter a link.</p>';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
