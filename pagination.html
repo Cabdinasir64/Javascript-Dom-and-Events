@@ -1,136 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pagination</title>
-    <style>
-      .pagination {
-        margin-top: 10px;
-      }
 
-      .pagination button {
-        margin: 2px;
-        padding: 5px 10px;
-        border: 1px solid #ccc;
-        background-color: white;
-        cursor: pointer;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pagination</title>
+  <style>
+    .pagination {
+      margin-top: 10px;
+    }
 
-      .pagination button.active {
-        font-weight: bold;
-        background-color: #007bff;
-        color: white;
-      }
-    </style>
-  </head>
+    .pagination button {
+      margin: 2px;
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      background-color: white;
+      cursor: pointer;
+    }
 
-  <body>
-    <ul id="items-list"></ul>
+    .pagination button.active {
+      font-weight: bold;
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
+</head>
 
-    <div id="pagination" class="pagination"></div>
+<body>
+  <ul id="items-list"></ul>
 
-    <script>
-      const items = [
-        "Item 1",
-        "Item 2",
-        "Item 3",
-        "Item 4",
-        "Item 5",
-        "Item 6",
-        "Item 7",
-        "Item 8",
-        "Item 9",
-        "Item 10",
-        "Item 11",
-        "Item 12",
-        "Item 13",
-        "Item 14",
-        "Item 15",
-        "Item 16",
-        "Item 17",
-        "Item 18",
-        "Item 19",
-        "Item 20",
-      ];
+  <div id="pagination" class="pagination"></div>
 
-      const itemsPerPage = 4;
-      let currentPage = 1;
+  <script>
+    const items = [
+      "Item 1",
+      "Item 2",
+      "Item 3",
+      "Item 4",
+      "Item 5",
+      "Item 6",
+      "Item 7",
+      "Item 8",
+      "Item 9",
+      "Item 10",
+      "Item 11",
+      "Item 12",
+      "Item 13",
+      "Item 14",
+      "Item 15",
+      "Item 16",
+      "Item 17",
+      "Item 18",
+      "Item 19",
+      "Item 20",
+    ];
 
-      function renderItems() {
-        const list = document.getElementById("items-list");
-        list.innerHTML = ""; // Clear list before rendering
+    const itemsPerPage = 4;
+    let currentPage = 1;
 
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        const paginatedItems = items.slice(start, end);
+    function renderItems() {
+      const list = document.getElementById("items-list");
+      list.innerHTML = ""; // Clear list before rendering
 
-        paginatedItems.forEach((item) => {
-          const li = document.createElement("li");
-          li.textContent = item;
-          list.appendChild(li);
-        });
+      const start = (currentPage - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const paginatedItems = items.slice(start, end);
 
-        renderPagination();
-      }
+      paginatedItems.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        list.appendChild(li);
+      });
 
-      function renderPagination() {
-        const pagination = document.getElementById("pagination");
-        pagination.innerHTML = "";
+      renderPagination();
+    }
 
-        const totalPages = Math.ceil(items.length / itemsPerPage);
+    function renderPagination() {
+      const pagination = document.getElementById("pagination");
+      pagination.innerHTML = "";
 
-        // Previous Button
-        const prevButton = document.createElement("button");
-        prevButton.textContent = "<";
-        prevButton.disabled = currentPage === 1;
-        prevButton.onclick = () => {
-          if (currentPage > 1) {
-            currentPage--;
-            renderItems();
-          }
-        };
-        pagination.appendChild(prevButton);
+      const totalPages = Math.ceil(items.length / itemsPerPage);
 
-        // Page Numbers
-        for (let i = 1; i <= totalPages; i++) {
-          if (
-            i === 1 ||
-            i === totalPages ||
-            (i >= currentPage - 1 && i <= currentPage + 1)
-          ) {
-            const btn = document.createElement("button");
-            btn.textContent = i;
-            btn.onclick = () => {
-              currentPage = i;
-              renderItems();
-            };
-            if (i === currentPage) btn.classList.add("active");
-            pagination.appendChild(btn);
-          } else if (
-            (i === currentPage - 2 || i === currentPage + 2) &&
-            totalPages > 5
-          ) {
-            const dots = document.createElement("span");
-            dots.textContent = "...";
-            pagination.appendChild(dots);
-          }
+      // Previous Button
+      const prevButton = document.createElement("button");
+      prevButton.textContent = "<";
+      prevButton.disabled = currentPage === 1;
+      prevButton.onclick = () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderItems();
         }
+      };
+      pagination.appendChild(prevButton);
 
-        // Next Button
-        const nextButton = document.createElement("button");
-        nextButton.textContent = ">";
-        nextButton.disabled = currentPage === totalPages;
-        nextButton.onclick = () => {
-          if (currentPage < totalPages) {
-            currentPage++;
+      // Page Numbers
+      for (let i = 1; i <= totalPages; i++) {
+        if (
+          i === 1 ||
+          i === totalPages ||
+          (i >= currentPage - 1 && i <= currentPage + 1)
+        ) {
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          btn.onclick = () => {
+            currentPage = i;
             renderItems();
-          }
-        };
-        pagination.appendChild(nextButton);
+          };
+          if (i === currentPage) btn.classList.add("active");
+          pagination.appendChild(btn);
+        } else if (
+          (i === currentPage - 2 || i === currentPage + 2) &&
+          totalPages > 5
+        ) {
+          const dots = document.createElement("span");
+          dots.textContent = "...";
+          pagination.appendChild(dots);
+        }
       }
 
-      document.addEventListener("DOMContentLoaded", renderItems);
-    </script>
-  </body>
+      // Next Button
+      const nextButton = document.createElement("button");
+      nextButton.textContent = ">";
+      nextButton.disabled = currentPage === totalPages;
+      nextButton.onclick = () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderItems();
+        }
+      };
+      pagination.appendChild(nextButton);
+    }
+
+    document.addEventListener("DOMContentLoaded", renderItems);
+  </script>
+</body>
+
 </html>
